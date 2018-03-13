@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<head>
+<title>MyWebProject</title>
+<meta charset="utf-8" />
+<!--<link type="text/css" href="./lib/css/jquery-ui-1.8.19.custom.css"
+	rel="stylesheet" /> -->
+<style type= "text/css "> 
+.table1
+{
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-right: auto;
+    margin-left: auto;
+    width: 800px;
+ }
+.td
+ {
+    border: 1px solid #b5d6e6;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    height: 20px;
+ }
+ th
+ {
+    background-color: Gray;
+ }
+ .hover
+{
+  background-color: #cccc00;
+}
+</style>
+<script type="text/javascript" src="./js/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="./js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){  
+		     var textval = $("input[name=q]").attr("value");
+		     var cururl = "http://10.205.1.4:9090/getdzdp.do?name="+textval;
+				  $("#imgList").addClass("table1");
+        $.ajax({  
+            type:"GET",  
+            url: cururl,  
+            dataType:"json",  
+            global:false,   
+            success: function(data){  
+            	                       var listdata=data[textval];
+												          	 $("#imgList tr:not(#title)").remove();		
+												          	 $("#title").addClass("hover");
+												        	   $.each(listdata,function(index,item){
+												        	  	                     var addr="<tr id=\"title\">"+
+																											    "<td width=\"200\" >"+
+																											    	         "<div align=\"left\">"+
+																											    	          " <a >"+
+																											                    "<img  src="+item.imgurl+" />" +
+																											                  "</a>"+
+																											               "<div>"+
+																											               "<div> <a href="+item.contenturl+" >"+item.contenttitle+"</a><div>"+
+																											    "</td>"+
+																											    "<td width=\"80\" >"+
+																											    	"<div align=\"center\">"+
+																											    	 " <div class=\"tuan-info\">"+
+																											                             "<a href="+item.groupbyurl+" class=\"tuan\">" +
+																											                                "<span class=\"deal\">团购:</span>" +
+																											                                item.groupbytitle +
+																											                             "</a>"+
+																											        "</div>"+
+																											       "</div>"+
+																											    "</td>"+
+																											  "</tr>"  
+				        	  													       ;
+				        	  													       $("#imgList").append(addr);
+                                   });
+                                 }
+                 });
+
+					$('#submit').click(function(){
+						var textvalf = $("input[name=q]").attr("value");
+						$("#imgList tr").remove();	
+						$("#imgList").addClass("table1");
+		        var cururlf = "http://10.205.1.4:9090/getdzdp.do?name="+textvalf;
+						        $.ajax({  
+				            type:"GET",  
+				            url: cururlf,  
+				            dataType:"json",  
+				            global:false,   
+				            success: function(data){  
+				          	 var listdata=data[textvalf];
+										$("#imgList tr:not(#title)").remove();	
+				          	$("#title").addClass("hover");
+				        	  $.each(listdata,function(index,item){
+				        	  													      var addr="<tr id=\"title\">"+
+																											    "<td width=\"200\" >"+
+																											    	         "<div align=\"left\">"+
+																											    	          " <a >"+
+																											                    "<img  src="+item.imgurl+" />"+
+																											                  "</a>"+
+																											               "<div>"+
+																											               "<div> <a href="+item.contenturl+" >"+item.contenttitle+"</a><div>"+
+																											    "</td>"+
+																											    "<td width=\"80\" >"+
+																											    	"<div align=\"center\">"+
+																											    	 " <div class=\"tuan-info\">"+
+																											                             "<a href="+item.groupbyurl+" class=\"tuan\">"+
+																											                                "<span class=\"deal\">团购:</span>"+
+																											                                item.groupbytitle +
+																											                             "</a>"+
+																											        "</div>"+
+																											       "</div>"+
+																											    "</td>"+
+																											  "</tr>"  
+				        	  													       ;
+				        	  													       $("#imgList").append(addr); 
+				        	                          });
+                            }
+                    });
+
+
+
+					});
+			
+});
+</script>
+</head>
+<body>
+<table align="center">
+	<tr align="center">
+    <div align="center">请输入栏目：  <input  type="text" name="q" value="亲子生活"/></div>
+  </tr>
+  <tr align="center">
+  	<td><div align="center"><button type="button" id="submit">查询</button></div></td>
+
+  </tr>
+</table>
+<table id="imgList" cellspacing="0" cellpadding="0" width="1000" border="0" align="center"  >
+  <tr id="aaa">
+    <td width="200" >
+    	         <div align="left">
+    	           <a >
+                    <img  src="http://p1.meituan.net/wedding/b3de2bf3d6b17273a99d765640f21040243899.jpg%40249w_249h_0e_1l" />
+                  </a>
+               <div>
+               <div> <a href="http://t.dianping.com/deal/13045930" >Honey Angel精致孕味写真会所(上海旗舰店)</a><div>
+    </td>
+    <td width="80" >
+    	<div align="center">
+    	  <div class="tuan-info">
+                             <a href="http://t.dianping.com/deal/13045930" class="tuan">
+                                <span class="deal">团购:</span>
+                                HoneyAngel精致孕味写真会所!仅售799元，价值1999元单人HoneyAng...
+                             </a>
+        </div>
+       </div>
+    </td>
+  </tr>     
+  <!-- 获取select的selected值 biuuu.com
+<select id="selectId"><option value="biuuu_s1">s1</option>
+<option value="biuuu_s2">s2</option>
+<option value="biuuu_s3">s3</option>
+<option value="biuuu_s4">s4</option>
+</select>-->
+</table>
+</body>
+</html>
+

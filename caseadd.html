@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>测试用例详情</title>
+<meta http-equiv="content-type" content="text/html;charset=gb2312">
+<style type= "text/css "> 
+	.hover
+{
+  width:350px;height:25px;
+}
+
+  .hovercell
+{
+  width:100px;height:25px;
+}
+</style>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	( function ($){
+			$.fn.serializeJson= function (){
+			var serializeObj={};
+			var array= this .serializeArray();
+			var str= this .serialize();
+			$(array).each( function (){
+			if (serializeObj[ this .name]){
+			if ($.isArray(serializeObj[ this .name])){
+			serializeObj[ this .name].push( this .value);
+			} else {
+			serializeObj[ this .name]=[serializeObj[ this .name], this .value];
+			}
+			} else {
+			serializeObj[ this .name]= this .value;
+			}
+			});
+			return serializeObj;
+			};
+			})(jQuery);
+			 
+			(function($){ 
+			    $.fn.serializeJson=function(){ 
+			      var serializeObj={}; 
+			      var array=this.serializeArray(); 
+			      var str=this.serialize(); 
+			      $(array).each(function(){ 
+			        if(serializeObj[this.name]){ 
+			          if($.isArray(serializeObj[this.name])){ 
+			            serializeObj[this.name].push(this.value); 
+			          }else{ 
+			            serializeObj[this.name]=[serializeObj[this.name],this.value]; 
+			          } 
+			        }else{ 
+			          serializeObj[this.name]=this.value;  
+			        } 
+			      }); 
+			      return serializeObj; 
+			    }; 
+			  })(jQuery); 
+    /*添加行数据*/
+     function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);  //获取url中"?"符后的字符串并正则匹配
+            var context = "";
+            if (r != null)
+                 context = r[2];
+            reg = null;
+            r = null;
+            return context == null || context == "" || context == "undefined" ? "" : context;
+        }
+    $("#table1 td input").addClass("hover");
+    $("#table1 td:not(#aaa)").css("background-color","red");
+    $("#table1 td").css("width","130px");
+    $(".J_add").click(function(){
+        $('#tb').append(' <tr><td><input type="text" name="ssd"></td><td><input type="text"></td><td></td><td></td><td><a class="J_del">DEL</a></td></tr>');
+    });
+    //移除方法
+    $(".J_del").live("click",function(){
+        $(this).parents("tr").remove();
+    }); 
+    var cururl="http://127.0.0.1:9090/casedetail.do?intfacename=" + GetQueryString("intfacename")+"&caseid="+GetQueryString("caseid");
+    $.ajax({  
+            type:"GET",  
+            url: cururl,  
+            dataType:"json",  
+            global:false,   
+            success: function(data){  
+												          	 $("#imgList tr:not(#title)").remove();		
+												          	 $("#title").addClass("hover");
+																			for (var i in data) 
+																			{
+																			        $('[name="'+i+'"]').val(data[i]);
+																			}
+                                   }
+                 });
+                 $("#close").click(function(){
+           	                                                  location.href ="caselist.html";
+           	                                            });
+           	     
+           	     $("#save").click(function(){
+           	     	                                           var cururl="http://127.0.0.1:9090/user.do";
+           	                                                 var jsonstr = $("#tf").serializeJson();//自动将form表单封装成json
+           	                                                 alert(jsonstr.functionPoint)
+           	                                                 console.log(jsonstr);
+           	                                                 var asjs=JSON.stringify(jsonstr);
+           	                                                 //$.post(cururl,jsonstr.toJSONString(),dealRetJson,"json");
+           	                                                  $.post(cururl,asjs,dealRetJson,"json");
+           	                                            });
+           	      function dealRetJson(retjson)
+           	      {
+		           	      	var retcode=retjson.retcode;
+		           	      	alert(retcode);
+           	      }
+});
+</script>
+</head>
+<body>
+	<form action="" method="post" id="tf">
+   <table id="table1" align=center valign=middle>
+	    <tr>
+	         <td>用例编号</td><td><input type="text" name="caseid" ></td>
+	    </tr>
+	    <tr>
+	       <td>测试接口</td><td><input type="text" name="functionPoint"></td>
+	    </tr>
+	    <tr>
+	        <td>测 试 点</td><td><input type="text" name="testPoint"></td>
+	    </tr>
+	    <tr>
+	        <td>预制条件</td><td><input type="text" name="preConditions"></td>
+	    </tr>
+	    <tr>
+	        <td>操作步骤</td><td><input type="text" name="opeSteps"></td>
+	    </tr>
+	    <tr>
+	       <td>输入数据</td><td><textarea rows="2" cols="40" name="inputData" /></textarea> </td>
+	    </tr>
+	    <tr>
+	        <td>测试结果</td><td><input type="text" name="retData"></td>
+	    </tr>
+	    <tr>
+	       <td>返回数据</td><td><input type="text" name="testResult"></td>
+	    </tr>
+	    <tr>	
+	       <td>预期结果</td><td><textarea rows="5" cols="40" name="expectedResult"></textarea> </td>
+	    </tr>
+  </table>
+</form>
+<table id="table2" align=center valign=middle>
+ <tr id="aaa">
+       <td><button type="button" id="save">保存</button></td>
+       <td><button type="button" id="close">返回</button></td>
+       <td><button type="button" id="close">执行</button></td>
+    </tr>
+    </table>
+</body>
+</html>

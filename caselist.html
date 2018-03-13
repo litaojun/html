@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<head>
+<title>MyWebProject</title>
+<meta charset="utf-8" />
+<!--<link type="text/css" href="./lib/css/jquery-ui-1.8.19.custom.css"
+	rel="stylesheet" /> -->
+<style type= "text/css "> 
+.table1
+{
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-right: auto;
+    margin-left: auto;
+    width: 800px;
+ }
+.td
+ {
+    border: 1px solid #b5d6e6;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    height: 20px;
+ }
+ th
+ {
+    background-color: Gray;
+ }
+ .hover
+{
+  background-color: #cccc00;
+}
+</style>
+<script type="text/javascript" src="./js/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="./js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){  
+		     var textval = $("input[name=q]").attr("value");
+		     var cururl = "http://127.0.0.1:9090/caselist.do?intfacename=" + textval;
+		     $("#imgList tr:not(#title)").hover(
+				    function () { $(this).addClass("hover") },
+				    function () { $(this).removeClass("hover") });
+				  $("#imgList").addClass("table1");
+        $.ajax({  
+            type:"GET",  
+            url: cururl,  
+            dataType:"json",  
+            global:false,   
+            success: function(data){  
+												          	 $("#imgList tr:not(#title)").remove();		
+												          	 $("#title").addClass("hover");
+												        	   $.each(data,function(index,item){
+												        	  	                     var addr="<tr><td >" + item.caseid + "</td>"
+																									        				  + "<td >" + item.functionPoint + "</td>"
+																									        				  + "<td >" + item.testPoint +  "</td>"
+																									        				  + "<td >" + item.preConditions + "</td>"
+																									                  + "<td>" + item.opeSteps + "</td>"
+																									                  +"<td>" + item.inputData + "</td>"
+																									                  +"<td>" + item.expectedResult + "</td>"
+																									                  +"<td>" + item.retData + "</td>"
+																									                  +"<td>" + item.testResult + "</td>"
+																									        				  + "</tr>";
+												        		                         $("#imgList").append(addr);
+												        		                         $("#imgList").on('mouseover', "tr:not(#title)", function(event) {
+																																            $(this).addClass("hover");
+																																        }).on('mouseout', "tr:not(#title)", function(event) {
+																																            $(this).removeClass("hover");
+																																        });
+												                                           });
+												                                     $("#imgList").addClass("table1");
+												                                     $("#imgList td").addClass("td");
+												                                     $("#imgList").on('click', "tr:not(#title)", function(event) {
+												                                     	            var caseidf = $("td:eq(0)",$(this)).text();
+												                                     	            var infacename=$("input[name=q]").attr("value");
+																																           location.href ="caseadd.html?intfacename="+infacename+"&caseid="+caseidf;
+																																        });
+                                   }
+                 });
+
+					$('#submit').click(function(){
+						var textvalf = $("input[name=q]").attr("value");
+						$("#imgList tr:not(#title)").remove();	
+		        var cururlf = "http://127.0.0.1:9090/caselist.do?intfacename=" + textvalf;
+						        $.ajax({  
+				            type:"GET",  
+				            url: cururlf,  
+				            dataType:"json",  
+				            global:false,   
+				            success: function(data){  
+				          	
+				          	$("#title").addClass("hover");
+				        	  $.each(data,function(index,item){
+				        	  													       var addr="<tr><td >" + item.caseid + "</td>"
+																									        				  + "<td >" + item.functionPoint + "</td>"
+																									        				   + "<td >" + item.testPoint +  "</td>"
+																									        				  + "<td >" + item.preConditions + "</td>"
+																									                   + "<td>" + item.opeSteps + "</td>"
+																									                   +"<td>" + item.inputData+ "</td>"
+																									                   +"<td>" + item.expectedResult+ "</td>"
+																									                   +"<td>" + item.retData+ "</td>"
+																									                   +"<td>" + item.testResult + "</td>"
+																									        				  + "</tr>";
+												        		                         $("#imgList").append(addr);
+																										});
+																										$("#imgList").addClass("table1");
+												                                     $("#imgList td").addClass("td");
+				        	                          }
+                            });
+                    });
+           $("#imgList tr:not(#title)").click(function(){
+           	                                                  location.href ="caseadd.html?intfacename=useradd&caseid=wsa_6";
+           	                                            });
+            $("#zhixing").click(function(){
+                             var temptxt = $("input[name=q]").attr("value");
+                             var zxurl = "http://127.0.0.1:9090/caserunbyinface.do?intfacename="+temptxt;
+           	                 $.ajax({  
+												            type:"GET",  
+												            url: zxurl,  
+												            dataType:"json",  
+												            global:false,   
+												            success: function(data){  
+												            	                           $("#submit").click();
+												            	                           
+												            	                     }
+           	                                            });
+           	                               });
+               $("#allzx").click(function(){
+                             var zxurl = "http://127.0.0.1:9090/caserunsyncmail.do";
+           	                 $.ajax({  
+												            type:"GET",  
+												            url: zxurl,  
+												            dataType:"json",  
+												            global:false,   
+												            success: function(data){  
+												            	                           $("#submit").click();
+												            	                     }
+           	                                            });
+           	                               });
+           	  $("#testresult").click(function(){
+                             var zxurl = "testResult.html";
+           	                 location.href =zxurl;
+           	               });
+					});
+			
+
+</script>
+</head>
+<body>
+<table align="center">
+	<tr align="center">
+    <div align="center">请输入接口名称：  <input  type="text" name="q" value="userdel"/></div>
+  </tr>
+  <tr align="center">
+  	<td><div align="center"><button type="button" id="submit">查询</button></div></td>
+  	<td><div align="center"><button type="button" id="zhixing">执行当前接口</button></div></td>
+  	<td><div align="center"><button type="button" id="allzx">执行所有接口</button></div></td>
+  	<td><div align="center"><button type="button" id="testresult">查看测试报告</button></div></td>
+  </tr>
+</table>
+<table id="imgList" cellspacing="0" cellpadding="0" width="1000" border="0" align="center"  >
+  <tr id="title">
+    <td width="100" ><div align="center">
+      <div align="left">用例编号</div>
+    </div></td>
+    <td width="200" ><div align="center">
+      <div align="left">测试接口</div>
+    </div></td>
+    <td width="80" ><div align="center">
+      <div align="left">测试点</div>
+    </div></td>
+    <td width="80" ><div align="center">
+      <div align="left">预制条件</div>
+    </div></td>
+    <td width="80"><div align="center">
+      <div align="left">操作步骤</div>
+    </div></td>
+    <td width="80" "><div align="center">
+      <div align="left">输入数据</div>
+    </div></td>
+    <td width="80" ><div align="center">
+      <div align="left">预期结果</div>
+    </div></td>
+    <td width="80" ><div align="center">
+      <div align="left">返回数据</div>
+    </div></td>
+    <td width="80"><div align="center">
+      <div align="left">测试结果</div>
+    </div></td>
+  </tr>     
+  <!-- 获取select的selected值 biuuu.com
+<select id="selectId"><option value="biuuu_s1">s1</option>
+<option value="biuuu_s2">s2</option>
+<option value="biuuu_s3">s3</option>
+<option value="biuuu_s4">s4</option>
+</select>-->
+</table>
+</body>
+</html>
+
