@@ -95,7 +95,7 @@ a.popup_link:hover {
 <script type="text/javascript" src="./js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){  
-		     var cururl = "http://127.0.0.1:8080/prop/testplandetail?testPlanName=aaaa" ;
+		     var cururl = "http://127.0.0.1:8080/prop/testappmap?planid=1" ;
         $.ajax({  
             type:"GET",  
             url: cururl,  
@@ -104,30 +104,66 @@ a.popup_link:hover {
             success: function(data){  
 												          	   $("tr[class='errorClass'],tr[class='failClass'],tr[class='passClass']").remove();	
                                                                $("tr[id^='ft'],tr[id^='pt']").remove();	
-                                                               listdata = data.testrst	;														   
+															   $("#total_row").remove()
+                                                               listdata = data.testrst	;	
+                                                               casetotal = 0;
+                                                               casesuccess = 0;
+                                                               casefail = 0;
+                                                               caseerror = 0;															   
 												        	   $.each(listdata,function(index,item){
-																					  var addr=  "<tr class='errorClass'>" + 
+															                          casetotal = casetotal + item.total;
+																					  casesuccess = casesuccess + item.success;
+																					  casefail = casefail + item.fail;
+																					  caseerror = caseerror + item.error;
+																					  ifccls = "passClass";
+																					  if(item.fail > 0)
+																					      ifccls = "failClass";
+																					  if(item.error > 0)
+																					       ifccls = "errorClass";
+																					  var addr=  "<tr class='" + ifccls + "'>" + 
 																									"<td>" + item.interfaceName + "</td>" +
-																									"<td>" + item.fail + "</td>"  +
-																									"<td>" + item.error + "</td>" + 
+																									"<td>" + item.total + "</td>"  +
 																									"<td>" + item.success + "</td>" + 
-																									"<td>" + item.total + "</td>" + 
+																									"<td>" + item.fail + "</td>" + 
+																									"<td>" + item.error + "</td>" + 
 																									"<td><a href=\"javascript:showClassDetail('c" + index + "'," + item.total + ")\">Detail</a></td>" + 
 																								"</tr>"
 																						$("#result_table").append(addr);
-																						$.each(item.result,function(i,testcase){
-																						                                                  var testcasestr = "<tr id='ft"+ index + "." + i + "' class='none'>" + 
-																																			             "<td class='errorCase'><div class='testcase'>" + testcase.caseid + "_" + testcase.testPoint + "</div></td>" + 
+																						$.each(item.result,function(i,tcase){
+																						                                             
+																						                                                  var signdetail = "pass";
+																																		  var trid = "pt";
+																																		  var cls = "None";
+																																		  var hcls ="hiddenRow";
+																																		  
+                                                                                                                                          if(tcase.resultSign == "1")
+																																		  {
+																																		      signdetail = "error";
+																																			  trid = "ft";
+																																			  cls = "failCase";
+																																			  
+																																		}
+																																		
+																																		  if(tcase.resultSign == "2")
+																																		  {
+																																		       signdetail = "fail";
+																																			   trid = "ft";
+																																			   cls = "errorCase";
+																																			   
+																																		   }
+																																			 
+																						                                                  var testcasestr = "<tr id='"+ trid + index + "." + (i+1) + "' class='" + hcls +"'>" + 
+																																			             "<td class='"  + cls +"'><div class='testcase'>" + tcase.testcaseid + "_" + tcase.testpoint + "</div></td>" + 
 																																			             "<td colspan='5' align='center'>" + 
-																																			             "<a class=\"popup_link\" onfocus='this.blur();' href=\"javascript:showTestDetail('div_ft" + index + "." + i + "')\" >" + 
-																																				         "error</a>" + 
-																																							"<div id='div_ft"+ index + "." + i +"' class=\"popup_window\">" + 
+																																			             "<a class=\"popup_link\" onfocus='this.blur();' href=\"javascript:showTestDetail('div_"+ trid + index + "." + (i+1) + "')\" >" + 
+																																				         signdetail + "</a>" + 
+																																							"<div id='div_"+trid+ index + "." + (i+1) +"' class=\"popup_window\">" + 
 																																								"<div style='text-align: right; color:red;cursor:pointer'>" + 
-																																								"<a onfocus='this.blur();' onclick=\"document.getElementById('div_ft"+ index + "." + i +"').style.display = 'none' \" >" + 
+																																								"<a onfocus='this.blur();' onclick=\"document.getElementById('div_"+trid+ index + "." + (i+1) +"').style.display = 'none' \" >" + 
 																																								   "[x]</a>" +
 																																								"</div>" + 
 																																								"<pre>" +
-                                                                                                                                                                   testcase.errinfo + 
+                                                                                                                                                                   tcase.errinfo + 
 																																								"</pre>" +
 																																							"</div>" +
 																																							"</td>" +
@@ -135,6 +171,15 @@ a.popup_link:hover {
                                                                                                                                           $("#result_table").append(testcasestr);  																																						
 																						                                             })
 																						})
+															totalstr = "<tr id='total_row'>"	+ 
+																	"<td>Total</td>"  + 
+																	"<td>"+casetotal+"</td>"  +
+																	"<td>"+casesuccess+"</td>"  +
+																	"<td>"+casefail+"</td>"   +
+																	"<td>"+caseerror+"</td>"  +
+																	"<td>&nbsp;</td>" +
+																"</tr>";
+																$("#result_table").append(totalstr);  		
                                                     }
 								   })
                  });
